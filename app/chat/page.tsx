@@ -39,7 +39,7 @@ const agents: Agent[] = [
 const AgentCard: FC<{ agent: Agent }> = ({ agent }) => {
   return (
     <Link href={`/chat/${agent.name.toLowerCase()}`}>
-      <Card className="hover:bg-slate-50 cursor-pointer transition-colors">
+      <Card className="hover:bg-muted cursor-pointer transition-colors">
         <CardHeader>
           <div className="flex items-center gap-2">
             <span className="text-2xl">{agent.emoji}</span>

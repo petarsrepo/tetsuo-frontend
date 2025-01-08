@@ -16,13 +16,15 @@ export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div className="min-h-screen pb-20 flex flex-col">
       <header className="flex justify-between items-center p-4">
-        <img
-          src={Logo.src}
-          alt="Tetsuo"
-          className="w-14"
-          width={Logo.width}
-          height={Logo.height}
-        />
+        <a href="/finance">
+          <img
+            src={Logo.src}
+            alt="Tetsuo"
+            className="w-14"
+            width={Logo.width}
+            height={Logo.height}
+          />
+        </a>
         <div className="flex items-center gap-2">
           <ThemeDropdown />
           <WalletMultiButton />

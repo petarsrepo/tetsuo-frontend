@@ -7,13 +7,14 @@ import { Wallet, MessageCircle, Wrench, Smile } from "lucide-react";
 import Logo from "@/app/images/logo.webp";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { usePathname } from "next/navigation";
+import { ThemeDropdown } from "./ThemeDropdown";
 
 export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const tab = pathname.split("/")?.[1] || "finance";
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-20 flex flex-col">
       <header className="flex justify-between items-center p-4">
         <img
           src={Logo.src}
@@ -22,9 +23,12 @@ export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
           width={Logo.width}
           height={Logo.height}
         />
-        <WalletMultiButton />
+        <div className="flex items-center gap-2">
+          <ThemeDropdown />
+          <WalletMultiButton />
+        </div>
       </header>
-      <main className="p-4">{children}</main>
+      <main className="p-4 flex-1 h-full">{children}</main>
       <footer className="fixed bottom-0 left-0 right-0 bg-gray-100 flex items-center justify-center">
         <Tabs defaultValue={tab} className="w-full h-full rounded-none">
           <TabsList className="w-full h-full rounded-none">

@@ -17,9 +17,9 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const WhalesTransactions = () => {
-  const whalesTransactionsQuery = useWhalesTransactions();
+  const { data, isFetching, error } = useWhalesTransactions();
 
-  if (whalesTransactionsQuery.isFetching) {
+  if (isFetching) {
     return (
       <div className="flex flex-col gap-2">
         {Array.from({ length: 4 }).map((_, i) => (
@@ -29,12 +29,12 @@ export const WhalesTransactions = () => {
     );
   }
 
-  if (whalesTransactionsQuery.error) {
-    console.error("Error fetching whale transactions:", whalesTransactionsQuery.error);
+  if (error) {
+    console.error("Error fetching whale transactions:", error);
     return <AlertErrorMessage message="Issue fetching whales transactions" />;
   }
 
-  if (!whalesTransactionsQuery.data?.length) {
+  if (!data?.length) {
     return <div>No whale transactions found.</div>;
   }
 
@@ -50,24 +50,24 @@ export const WhalesTransactions = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {whalesTransactionsQuery.data.map((whaleTransaction) => (
-            <TableRow key={whaleTransaction.transaction_hash}>
+          {data.map(({ transaction_hash, amount_tokens, amount_usd, timestamp }) => (
+            <TableRow key={transaction_hash}>
               <TableCell>
-                {formatDecimal(whaleTransaction.amount_tokens)}
+                {formatDecimal(amount_tokens)}
                 <div className="text-muted-foreground text-sm">
-                  (${formatDecimal(whaleTransaction.amount_usd, 2)})
+                  (${formatDecimal(amount_usd, 2)})
                 </div>
               </TableCell>
               <TableCell>
-                {dayjs(whaleTransaction.timestamp).format("MM/DD/YYYY HH:mm")}
+                {dayjs(timestamp).format("MM/DD/YYYY HH:mm")}
               </TableCell>
               <TableCell className="text-right">
                 <a
-                  href={getSolscanTxnUrl(whaleTransaction.transaction_hash)}
+                  href={getSolscanTxnUrl(transaction_hash)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {truncateAddress(whaleTransaction.transaction_hash)}
+                  {truncateAddress(transaction_hash)}
                 </a>
               </TableCell>
             </TableRow>

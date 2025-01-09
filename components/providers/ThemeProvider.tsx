@@ -5,6 +5,6 @@ import {
   type ThemeProviderProps,
 } from "next-themes";
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
-}
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, ...props }) => (
+  <NextThemesProvider {...props}>{children}</NextThemesProvider>
+);

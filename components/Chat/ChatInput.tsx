@@ -27,20 +27,18 @@ export const ChatInput: FC<ChatInputProps> = ({
   const chatMutation = useChatMutation();
 
   const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
+    async (e: React.FormEvent | React.KeyboardEvent) => {
       e.preventDefault();
-      if (!message.trim()) return;
+      const trimmedMessage = message.trim();
+      if (!trimmedMessage) return;
 
-      const userMessage = message.trim();
       setMessage("");
       setStreamingResponse("");
-      onSubmit(userMessage);
-      const newMessages: ChatCompletionRequestMessage[] = [
+      onSubmit(trimmedMessage);
+
+      const updatedMessages: ChatCompletionRequestMessage[] = [
         ...messages,
-        {
-          role: "user",
-          content: userMessage,
-        },
+        { role: "user", content: trimmedMessage },
       ];
 
       try {
@@ -48,43 +46,40 @@ export const ChatInput: FC<ChatInputProps> = ({
           {
             chatType,
             chatCompletionRequest: {
-              messages: newMessages,
+              messages: updatedMessages,
               model: "gpt-4o",
               stream: true,
             },
-            onProgress: (partialResponse) => {
-              setStreamingResponse(partialResponse);
-            },
+            onProgress: setStreamingResponse,
           },
           {
             onSuccess: (finalResponse) => {
               onMessageSent(finalResponse);
               setStreamingResponse("");
             },
-            onError: (error) => {
-              console.error("Chat error:", error);
-              setStreamingResponse(
-                "Sorry, there was an error processing your request."
-              );
+            onError: () => {
+              console.error("Chat error occurred");
+              setStreamingResponse("Sorry, there was an error processing your request.");
             },
           }
         );
       } catch (error) {
         console.error("Chat error:", error);
-        setStreamingResponse(
-          "Sorry, there was an error processing your request."
-        );
+        setStreamingResponse("Sorry, there was an error processing your request.");
       }
     },
-    [message, chatMutation, onMessageSent]
+    [message, messages, chatType, chatMutation, onSubmit, onMessageSent, setStreamingResponse]
   );
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSubmit(e);
+      }
+    },
+    [handleSubmit]
+  );
 
   return (
     <form onSubmit={handleSubmit} className="relative">

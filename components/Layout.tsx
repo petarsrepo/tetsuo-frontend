@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { FC, ReactNode } from "react";
+import { FC, ReactNode } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { Wallet, MessageCircle, Wrench, Smile } from "lucide-react";
@@ -15,15 +15,22 @@ const WalletMultiButton = dynamic(
   { ssr: false }
 );
 
+const navItems = [
+  { value: "finance", label: "Finance", icon: Wallet, href: "/finance" },
+  { value: "chat", label: "Chat", icon: MessageCircle, href: "/chat" },
+  { value: "tools", label: "Tools", icon: Wrench, href: "/tools" },
+  { value: "fun", label: "Fun", icon: Smile, href: "/fun" },
+];
+
 export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const pathname = usePathname();
-  const tab = pathname.split("/")?.[1] || "finance";
+  const activeTab = pathname.split("/")?.[1] || "finance";
 
   return (
-    <div className="min-h-screen pb-20 flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20">
       {/* Header Section */}
       <header className="flex justify-between items-center p-4">
-        <a href="/finance">
+        <Link href="/finance" aria-label="Home">
           <img
             src={Logo.src}
             alt="Tetsuo Logo"
@@ -31,7 +38,7 @@ export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
             width={Logo.width}
             height={Logo.height}
           />
-        </a>
+        </Link>
         <div className="flex items-center gap-2">
           <ThemeDropdown />
           <WalletMultiButton />
@@ -39,36 +46,20 @@ export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
       </header>
 
       {/* Main Content */}
-      <main className="p-4 flex-1 h-full">{children}</main>
+      <main className="p-4 flex-1">{children}</main>
 
       {/* Footer Tabs */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-gray-100 flex items-center justify-center">
-        <Tabs defaultValue={tab} className="w-full h-full rounded-none">
-          <TabsList className="w-full h-full rounded-none">
-            <TabsTrigger value="finance" className="w-1/4" asChild>
-              <Link href="/finance" className="flex flex-col items-center">
-                <Wallet size={20} />
-                <span className="text-xs">Finance</span>
-              </Link>
-            </TabsTrigger>
-            <TabsTrigger value="chat" className="w-1/4" asChild>
-              <Link href="/chat" className="flex flex-col items-center">
-                <MessageCircle size={20} />
-                <span className="text-xs">Chat</span>
-              </Link>
-            </TabsTrigger>
-            <TabsTrigger value="tools" className="w-1/4" asChild>
-              <Link href="/tools" className="flex flex-col items-center">
-                <Wrench size={20} />
-                <span className="text-xs">Tools</span>
-              </Link>
-            </TabsTrigger>
-            <TabsTrigger value="fun" className="w-1/4" asChild>
-              <Link href="/fun" className="flex flex-col items-center">
-                <Smile size={20} />
-                <span className="text-xs">Fun</span>
-              </Link>
-            </TabsTrigger>
+      <footer className="fixed inset-x-0 bottom-0 bg-gray-100">
+        <Tabs defaultValue={activeTab} className="w-full h-full">
+          <TabsList className="w-full h-full">
+            {navItems.map(({ value, label, icon: Icon, href }) => (
+              <TabsTrigger key={value} value={value} asChild className="w-1/4">
+                <Link href={href} className="flex flex-col items-center">
+                  <Icon size={20} />
+                  <span className="text-xs">{label}</span>
+                </Link>
+              </TabsTrigger>
+            ))}
           </TabsList>
         </Tabs>
       </footer>

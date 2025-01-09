@@ -8,16 +8,17 @@ export type WhaleTransactionResponse = {
   timestamp: string;
 };
 
+const fetchWhaleTransactions = async (): Promise<WhaleTransactionResponse[]> => {
+  const response = await fetch("/api/v1/whales/transactions");
+  if (!response.ok) {
+    throw new Error("Failed to fetch whale transactions");
+  }
+  return response.json();
+};
+
 export const useWhalesTransactions = () => {
   return useQuery({
     queryKey: ["whales-transactions"],
-    queryFn: async () => {
-      const response = await fetch("/api/v1/whales/transactions");
-      if (!response.ok) {
-        throw new Error("Failed to fetch whale transactions");
-      }
-      const data = (await response.json()) as WhaleTransactionResponse[];
-      return data;
-    },
+    queryFn: fetchWhaleTransactions,
   });
 };

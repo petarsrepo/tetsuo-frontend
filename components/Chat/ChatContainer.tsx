@@ -12,15 +12,8 @@ export const ChatContainer: FC<{ chatType: ChatType }> = ({ chatType }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [streamingResponse, setStreamingResponse] = useState("");
 
-  const handleSubmit = (userMessage: string) => {
-    setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
-  };
-
-  const handleMessageSent = (aiResponse: string) => {
-    setMessages((prev) => [
-      ...prev,
-      { role: "assistant", content: aiResponse },
-    ]);
+  const addMessage = (role: ChatMessage["role"], content: string) => {
+    setMessages((prev) => [...prev, { role, content }]);
   };
 
   return (
@@ -29,9 +22,8 @@ export const ChatContainer: FC<{ chatType: ChatType }> = ({ chatType }) => {
         {messages.map((message, index) => (
           <Card
             key={index}
-            className={`p-4 ${
-              message.role === "user" ? "ml-12 bg-primary/10" : "mr-12 bg-muted"
-            }`}
+            className={`p-4 ${message.role === "user" ? "ml-12 bg-primary/10" : "mr-12 bg-muted"
+              }`}
           >
             <p className="text-sm whitespace-pre-wrap">{message.content}</p>
           </Card>
@@ -46,8 +38,8 @@ export const ChatContainer: FC<{ chatType: ChatType }> = ({ chatType }) => {
         <ChatInput
           chatType={chatType}
           messages={messages}
-          onSubmit={handleSubmit}
-          onMessageSent={handleMessageSent}
+          onSubmit={(userMessage) => addMessage("user", userMessage)}
+          onMessageSent={(aiResponse) => addMessage("assistant", aiResponse)}
           setStreamingResponse={setStreamingResponse}
         />
       </div>

@@ -22,21 +22,25 @@ export const WhalesTransactions = () => {
   if (whalesTransactionsQuery.isFetching) {
     return (
       <div className="flex flex-col gap-2">
-        <Skeleton className="h-[50px] w-full" />
-        <Skeleton className="h-[50px] w-full" />
-        <Skeleton className="h-[50px] w-full" />
-        <Skeleton className="h-[50px] w-full" />
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-[50px] w-full" />
+        ))}
       </div>
     );
   }
 
   if (whalesTransactionsQuery.error) {
+    console.error("Error fetching whale transactions:", whalesTransactionsQuery.error);
     return <AlertErrorMessage message="Issue fetching whales transactions" />;
+  }
+
+  if (!whalesTransactionsQuery.data?.length) {
+    return <div>No whale transactions found.</div>;
   }
 
   return (
     <ScrollArea className="max-w-lg mx-auto h-[500px]">
-      <Table className="max-w-lg mx-auto">
+      <Table aria-label="Whales Transactions Table" className="max-w-lg mx-auto">
         <TableCaption>Whales Transactions</TableCaption>
         <TableHeader>
           <TableRow>
@@ -46,13 +50,13 @@ export const WhalesTransactions = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {whalesTransactionsQuery.data?.map((whaleTransaction) => (
+          {whalesTransactionsQuery.data.map((whaleTransaction) => (
             <TableRow key={whaleTransaction.transaction_hash}>
               <TableCell>
-                {formatDecimal(whaleTransaction.amount_tokens)} <br />
-                <span className="text-muted-foreground text-sm">
+                {formatDecimal(whaleTransaction.amount_tokens)}
+                <div className="text-muted-foreground text-sm">
                   (${formatDecimal(whaleTransaction.amount_usd, 2)})
-                </span>
+                </div>
               </TableCell>
               <TableCell>
                 {dayjs(whaleTransaction.timestamp).format("MM/DD/YYYY HH:mm")}
@@ -61,6 +65,7 @@ export const WhalesTransactions = () => {
                 <a
                   href={getSolscanTxnUrl(whaleTransaction.transaction_hash)}
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {truncateAddress(whaleTransaction.transaction_hash)}
                 </a>
@@ -72,38 +77,3 @@ export const WhalesTransactions = () => {
     </ScrollArea>
   );
 };
-
-// const WhaleTransactionCard: FC<{ whaleTransaction: WhaleTransactionResponse }> = ({
-//   whaleTransaction,
-// }) => {
-//   return (
-//     <Card>
-//       <CardHeader className="flex flex-row justify-between items-center">
-//         <CardTitle>
-//           {truncateAddress(whaleTransaction.transaction_hash)}
-//         </CardTitle>
-//         <CardDescription>
-//           {dayjs(whaleTransaction.timestamp).format("MM/DD/YYYY HH:mm")}
-//         </CardDescription>
-//       </CardHeader>
-//       <CardContent>
-//         <div>
-//           {formatDecimal(whaleTransaction.amount_tokens)}{" "}
-//           <span className="text-muted-foreground text-sm">
-//             (${formatDecimal(whaleTransaction.amount_usd, 2)})
-//           </span>
-//         </div>
-//       </CardContent>
-//       <CardFooter className="justify-end">
-//         <Button variant="link" asChild>
-//           <a
-//             href={getSolscanTxnUrl(whaleTransaction.transaction_hash)}
-//             target="_blank"
-//           >
-//             View on Solscan
-//           </a>
-//         </Button>
-//       </CardFooter>
-//     </Card>
-//   );
-// };

@@ -1,13 +1,19 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import type { FC, ReactNode } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { Wallet, MessageCircle, Wrench, Smile } from "lucide-react";
 import Logo from "@/app/images/logo.webp";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { usePathname } from "next/navigation";
 import { ThemeDropdown } from "./ThemeDropdown";
+
+// Dynamically import WalletMultiButton to avoid SSR issues
+const WalletMultiButton = dynamic(
+  () => import("@solana/wallet-adapter-react-ui").then((mod) => mod.WalletMultiButton),
+  { ssr: false }
+);
 
 export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -15,11 +21,12 @@ export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
 
   return (
     <div className="min-h-screen pb-20 flex flex-col">
+      {/* Header Section */}
       <header className="flex justify-between items-center p-4">
         <a href="/finance">
           <img
             src={Logo.src}
-            alt="Tetsuo"
+            alt="Tetsuo Logo"
             className="w-14"
             width={Logo.width}
             height={Logo.height}
@@ -30,7 +37,11 @@ export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
           <WalletMultiButton />
         </div>
       </header>
+
+      {/* Main Content */}
       <main className="p-4 flex-1 h-full">{children}</main>
+
+      {/* Footer Tabs */}
       <footer className="fixed bottom-0 left-0 right-0 bg-gray-100 flex items-center justify-center">
         <Tabs defaultValue={tab} className="w-full h-full rounded-none">
           <TabsList className="w-full h-full rounded-none">

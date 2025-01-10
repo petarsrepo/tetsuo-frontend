@@ -24,13 +24,20 @@ const DallePage = () => {
         setIsLoading(true);
 
         try {
-            const token = "igaFpCB4SQcOyBUFlCJl0pKwMIUwZVECg8TVTnL8"; // Hardcoded token
+            console.log("Request Payload:", {
+                prompt,
+                model,
+                size,
+                quality,
+                style,
+                response_format: responseFormat,
+                n,
+            });
 
-            const res = await fetch("https://services.tetsuo.ai/api/v1/image/dalle", {
+            const res = await fetch("/api/v1/image/dalle", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     prompt,
@@ -43,20 +50,24 @@ const DallePage = () => {
                 }),
             });
 
+            console.log("Response Status:", res.status);
+
             if (!res.ok) {
                 const errorData = await res.json();
-                setError(errorData.detail || "Something went wrong.");
+                setError(errorData.error || "Something went wrong.");
                 return;
             }
 
             const data = await res.json();
+            console.log("Parsed Response Data:", data);
 
-            if (data?.url) {
-                setResponse(data.url);
+            if (data?.imageUrl) {
+                setResponse(data.imageUrl);
             } else {
                 setError("Unexpected response format.");
             }
         } catch (err) {
+            console.error("Fetch Error:", err);
             setError(err instanceof Error ? err.message : "Failed to generate DALL-E image.");
         } finally {
             setIsLoading(false);
@@ -145,7 +156,7 @@ const DallePage = () => {
                 <div className="mt-8">
                     <h3 className="text-lg font-semibold">Generated Image:</h3>
                     <div className="mt-4">
-                        <img src={response} alt="Generated DALL-E" className="rounded-md max-w-full" />
+                        <img src={`https://services.tetsuo.ai/${response}`} alt="Generated DALL-E" className="rounded-md max-w-full" />
                         <p className="mt-2 text-sm text-muted">The image has been successfully generated and rendered below.</p>
                     </div>
                 </div>

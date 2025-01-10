@@ -1,3 +1,5 @@
-export default function Tools() {
-  return <div>Tools</div>;
+import ToolsPage from "@/components/pages/ToolsPage";
+
+export default function Media() {
+  return <ToolsPage />;
 }

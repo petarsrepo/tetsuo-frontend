@@ -9,27 +9,24 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { prompt, response_format } = body;
+        const { text } = body;
 
-        if (!prompt || !response_format) {
+        if (!text) {
             console.warn("Invalid request body:", body);
             return NextResponse.json({ error: "Bad request" }, { status: 400 });
         }
-
-        // Correct the endpoint URL for Flux Image API
-        const endpoint = `https://services.tetsuo.ai/api/v1/image/flux`;
 
         // Add timeout to fetch
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 5000); // 5-second timeout
 
-        const response = await fetch(endpoint, {
+        const response = await fetch(`${API_URL}/api/v1/sentiment/text`, {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${BEARER_TOKEN}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ prompt, response_format }),
+            body: JSON.stringify({ text }),
             signal: controller.signal,
         });
 
@@ -52,16 +49,7 @@ export async function POST(request: Request) {
         const data = await response.json();
         console.log("API Response Data:", data);
 
-        // Extract the URL from the response
-        if (response_format === "url" && typeof data === "object" && data.url) {
-            return NextResponse.json({ imageUrl: data.url }, { status: 200 });
-        }
-
-        // If unexpected response, return an error
-        return NextResponse.json(
-            { error: "Unexpected response format from API" },
-            { status: 500 }
-        );
+        return NextResponse.json(data, { status: 200 });
     } catch (error) {
         if (error instanceof Error && error.name === "AbortError") {
             console.error("Request timed out");
@@ -71,9 +59,9 @@ export async function POST(request: Request) {
             );
         }
 
-        console.error("Error in Flux image generation:", error);
+        console.error("Error in sentiment analysis:", error);
         return NextResponse.json(
-            { error: "Failed to generate Flux image" },
+            { error: "Failed to analyze sentiment" },
             { status: 500 }
         );
     }

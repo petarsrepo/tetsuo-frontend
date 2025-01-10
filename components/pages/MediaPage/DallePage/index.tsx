@@ -156,7 +156,7 @@ const DallePage = () => {
                 <div className="mt-8">
                     <h3 className="text-lg font-semibold">Generated Image:</h3>
                     <div className="mt-4">
-                        <img src={`https://services.tetsuo.ai/${response}`} alt="Generated DALL-E" className="rounded-md max-w-full" />
+                        <img src={`${response}`} alt="Generated DALL-E" className="rounded-md max-w-full" />
                         <p className="mt-2 text-sm text-muted">The image has been successfully generated and rendered below.</p>
                     </div>
                 </div>

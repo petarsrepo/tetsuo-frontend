@@ -22,13 +22,9 @@ export const POST = async (request: Request) => {
         }
 
         // Construct the endpoint for DALL-E API
-        const endpoint = `${API_URL}/api/v1/image/dalle`;
+        const endpoint = `${API_URL}api/v1/image/dalle`;
 
         console.log("API endpoint:", endpoint);
-
-        // Add timeout to fetch
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000); // 5-second timeout
 
         console.log("Sending request to external API...");
         const response = await fetch(endpoint, {
@@ -46,10 +42,7 @@ export const POST = async (request: Request) => {
                 response_format,
                 n,
             }),
-            signal: controller.signal,
         });
-
-        clearTimeout(timeout); // Clear the timeout once request completes
 
         console.log("Response status:", response.status);
 

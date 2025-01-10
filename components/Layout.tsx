@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { FC, ReactNode } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
-import { Wallet, MessageCircle, Wrench, Smile } from "lucide-react";
+import { Wallet, MessageCircle, Wrench, Smile, PlayIcon } from "lucide-react";
 import Logo from "@/app/images/logo.webp";
 import { usePathname } from "next/navigation";
 import { ThemeDropdown } from "./ThemeDropdown";
@@ -19,7 +19,7 @@ const navItems = [
   { value: "finance", label: "Finance", icon: Wallet, href: "/finance" },
   { value: "chat", label: "Chat", icon: MessageCircle, href: "/chat" },
   { value: "tools", label: "Tools", icon: Wrench, href: "/tools" },
-  { value: "fun", label: "Fun", icon: Smile, href: "/fun" },
+  { value: "media", label: "Media", icon: PlayIcon, href: "/media" },
 ];
 
 export const Layout: FC<{ children: ReactNode }> = ({ children }) => {

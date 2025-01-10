@@ -41,7 +41,8 @@ export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
         </Link>
         <div className="flex items-center gap-2">
           <ThemeDropdown />
-          <WalletMultiButton />
+          {/* Enable ONLY when secure trading is available */}
+          {/*<WalletMultiButton />*/}
         </div>
       </header>
 
